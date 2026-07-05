@@ -8,12 +8,34 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
   body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
   .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-  .header-section { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
-  .logo-bps { width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 8px; }
+
+  .header-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .logo-bps {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: white;
+    padding: 4px;
+    border-radius: 8px;
+  }
   .header-text { text-align: left; }
   .header-text h1 { color: #2c5282; font-size: 24px; line-height: 1.2; margin: 0; }
   .header-text .institution { color: #718096; font-size: 13px; line-height: 1.4; margin-top: 4px; }
-  @media (max-width: 480px) { .logo-bps { width: 55px; height: 55px; } .header-text h1 { font-size: 20px; } .header-text .institution { font-size: 12px; } .header-section { gap: 12px; } }
+  @media (max-width: 480px) {
+    .logo-bps { width: 55px; height: 55px; }
+    .header-text h1 { font-size: 20px; }
+    .header-text .institution { font-size: 12px; }
+    .header-section { gap: 12px; }
+  }
+
   .subtitle { text-align: center; color: #718096; margin-bottom: 24px; font-size: 14px; }
   .form-group { margin-bottom: 16px; }
   label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; font-size: 14px; }
@@ -28,13 +50,25 @@
   .alert.error { background: #fed7d7; color: #742a2a; display: block; }
   .preview { margin-top: 8px; max-width: 200px; border-radius: 8px; display: none; }
   .file-info { font-size: 12px; color: #718096; margin-top: 4px; }
-  .footer { text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; color: #a0aec0; font-size: 12px; }
+
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    color: #a0aec0;
+    font-size: 12px;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header-section">
-    <img src="https://bpsrw.dinaslhdki.id/images/logo.png" alt="Logo BPS" class="logo-bps" onerror="this.style.display='none'">
+    <img 
+      src="https://bpsrw.dinaslhdki.id/images/logo.png" 
+      alt="Logo BPS" 
+      class="logo-bps"
+      onerror="this.style.display='none'">
     <div class="header-text">
       <h1>Input Data Sampah Pilah</h1>
       <p class="institution">Bidang Pengelolaan Sampah RT/RW<br>Kelurahan Kota Bambu Utara</p>
@@ -57,6 +91,8 @@
       <label>Alamat *</label>
       <textarea name="alamat" rows="2" maxlength="255" required></textarea>
     </div>
+
+    <!-- === KOLOM RT & RW (BARU) === -->
     <div class="grid-2">
       <div class="form-group">
         <label>RT *</label>
@@ -67,6 +103,8 @@
         <input type="text" name="rw" maxlength="5" pattern="[0-9]{1,5}" inputmode="numeric" placeholder="Contoh: 003" required>
       </div>
     </div>
+    <!-- === END RT & RW === -->
+
     <div class="grid-2">
       <div class="form-group">
         <label>Organik (kg)</label>
@@ -89,26 +127,23 @@
     <div id="alert" class="alert"></div>
   </form>
 
-  <div class="footer">© 2026 Badan Pusat Statistik - Sistem Input Data Sampah</div>
+  <div class="footer">
+    © 2026 Bidang Pengelolaan Sampah RT/RW - Kelurahan Kota Bambu Utara
+  </div>
 </div>
 
 <script>
   // ⚠️ GANTI DENGAN URL WEB APP ANDA
-  const APPS_SCRIPT_URL ='https://script.google.com/macros/s/AKfycbxpbGQetkNOfBqBGK98eNEl9DdyE6KBZdrkqkkkABudZT1S6kzie0EA4vJ0FzsTbKMq/exec';
+  const APPS_SCRIPT_URL = 'https://shttps://script.google.com/macros/s/AKfycbyY5afZUI0vYKZPbghyLWqLyGxBjWB88yE68CZV2OlFf97UaiKcPS3mRa6w98MGKac9/execcript.google.com/macros/s/XXXXXXXXXXXXX/exec';
   
   const form = document.getElementById('formSampah');
   const alertBox = document.getElementById('alert');
   const preview = document.getElementById('preview');
   const inputFoto = document.getElementById('inputFoto');
-  const btnSubmit = document.getElementById('btnSubmit');
   
-  // Preview foto
   inputFoto.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if (!file) {
-      preview.style.display = 'none';
-      return;
-    }
+    if (!file) return;
     
     if (file.size > 2 * 1024 * 1024) {
       showAlert('✗ Ukuran foto maksimal 2MB', 'error');
@@ -119,21 +154,13 @@
     
     preview.src = URL.createObjectURL(file);
     preview.style.display = 'block';
-    console.log('✓ File dipilih:', file.name, '| Ukuran:', (file.size/1024).toFixed(2), 'KB');
   });
   
-  // Konversi file ke base64
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => {
-        console.log('✓ File berhasil dikonversi ke base64 (length:', reader.result.length, ')');
-        resolve(reader.result);
-      };
-      reader.onerror = () => {
-        console.error('✗ Error membaca file:', reader.error);
-        reject(new Error('Gagal membaca file'));
-      };
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
@@ -141,73 +168,68 @@
   function showAlert(msg, type) {
     alertBox.className = `alert ${type}`;
     alertBox.textContent = msg;
-    if (type === 'success') {
-      setTimeout(() => { alertBox.className = 'alert'; }, 5000);
-    }
   }
   
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Mengirim...';
     alertBox.className = 'alert';
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Mengirim...';
+    
+    // Validasi client-side RT/RW (hanya angka)
+    const rt = form.rt.value.trim();
+    const rw = form.rw.value.trim();
+    if (!/^\d{1,5}$/.test(rt)) {
+      showAlert('✗ RT harus angka 1-5 digit', 'error');
+      btn.disabled = false; btn.textContent = 'Kirim Data';
+      return;
+    }
+    if (!/^\d{1,5}$/.test(rw)) {
+      showAlert('✗ RW harus angka 1-5 digit', 'error');
+      btn.disabled = false; btn.textContent = 'Kirim Data';
+      return;
+    }
     
     try {
       const file = inputFoto.files[0];
-      if (!file) {
-        throw new Error('Foto wajib diupload');
-      }
-      
-      console.log('📤 Memulai upload...');
-      console.log('File:', file.name, '| Type:', file.type, '| Size:', file.size);
-      
       const fotoBase64 = await fileToBase64(file);
-      console.log('✓ Base64 ready (', fotoBase64.substring(0, 30), '...)');
       
       const payload = {
-        nama: form.nama.value.trim(),
-        alamat: form.alamat.value.trim(),
-        rt: form.rt.value.trim(),
-        rw: form.rw.value.trim(),
-        organik: parseFloat(form.organik.value) || 0,
-        anorganik: parseFloat(form.anorganik.value) || 0,
-        b3: parseFloat(form.b3.value) || 0,
-        residu: parseFloat(form.residu.value) || 0,
+        nama: form.nama.value,
+        alamat: form.alamat.value,
+        rt: rt,
+        rw: rw,
+        organik: form.organik.value,
+        anorganik: form.anorganik.value,
+        b3: form.b3.value,
+        residu: form.residu.value,
         foto: fotoBase64
       };
       
-      console.log('📤 Sending payload to Apps Script...');
-      console.log('Payload:', JSON.stringify({
-        ...payload,
-        foto: fotoBase64.substring(0, 50) + '...[truncated]'
-      }, null, 2));
-      
-      const response = await fetch(APPS_SCRIPT_URL, {
+      const res = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
+        mode: 'cors',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
       
-      console.log('✓ Response status:', response.status);
-      console.log('✓ Data berhasil dikirim!');
+      const data = await res.json();
       
-      showAlert('✓ Data berhasil disimpan ke Google Sheets!', 'success');
-      form.reset();
-      preview.style.display = 'none';
-      
+      if (data.success) {
+        showAlert('✓ Data berhasil disimpan ke Google Sheets!', 'success');
+        form.reset();
+        preview.style.display = 'none';
+      } else {
+        throw new Error(data.message || 'Gagal menyimpan data');
+      }
     } catch (err) {
-      console.error('✗ Error:', err);
       showAlert('✗ ' + err.message, 'error');
     } finally {
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = 'Kirim Data';
+      btn.disabled = false;
+      btn.textContent = 'Kirim Data';
     }
   });
-  
-  console.log('✓ Form siap digunakan');
-  console.log('Endpoint:', APPS_SCRIPT_URL);
 </script>
 </body>
 </html>
