@@ -229,13 +229,13 @@
       
       // Kirim ke Apps Script
       const response = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 
-          'Content-Type': 'text/plain'
-        },
-        body: JSON.stringify(payload)
-      });
+  method: 'POST',
+  mode: 'no-cors',  // ← WAJIB no-cors
+  headers: {
+    'Content-Type': 'text/plain'  // ← WAJIB text/plain
+  },
+  body: JSON.stringify(payload)
+});
       
       console.log('✓ Response status:', response.status);
       console.log('✓ Data berhasil dikirim!');
