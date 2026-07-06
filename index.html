@@ -123,23 +123,13 @@
   }
   
   // Submit form
-   form.addEventListener('submit', async function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
-  e.preventDefault();
-  
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = 'Mengirim...';
-  alertBox.className = 'alert';
-  
-  try {
-    const file = inputFoto.files[0];
-    if (!file) throw new Error('Foto wajib diupload');
-
+    
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Mengirim...';
     alertBox.className = 'alert';
-    console.log('File:', file.name, '| Size:', file.size);
-
+    
     try {
       const file = inputFoto.files[0];
       if (!file) throw new Error('Foto wajib diupload');
@@ -173,23 +163,6 @@
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
-    
-    console.log('Response status:', response.status);
-    
-    const total = (payload.organik + payload.anorganik + payload.b3 + payload.residu).toFixed(2);
-    showAlert('✓ Data berhasil disimpan! Total: ' + total + ' kg', 'success');
-    
-    form.reset();
-    preview.style.display = 'none';
-    
-  } catch (err) {
-    console.error('Error:', err);
-    showAlert('✗ ' + err.message, 'error');
-  } finally {
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = 'Kirim Data';
-  }
-});
       
       console.log('Response status:', response.status);
       
