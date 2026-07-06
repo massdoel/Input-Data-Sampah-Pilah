@@ -7,34 +7,40 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
   body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-  .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .container { max-width: 750px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
   .header-section { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
-  .logo-bps { width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 8px; }
-  .header-text { text-align: left; }
-  .header-text h1 { color: #2c5282; font-size: 24px; line-height: 1.2; margin: 0; }
-  .header-text .institution { color: #718096; font-size: 13px; line-height: 1.4; margin-top: 4px; }
-  @media (max-width: 480px) { .logo-bps { width: 55px; height: 55px; } .header-text h1 { font-size: 20px; } .header-text .institution { font-size: 12px; } .header-section { gap: 12px; } }
+  .logo-bps { width: 70px; height: 70px; object-fit: contain; }
+  .header-text h1 { color: #2c5282; font-size: 24px; margin: 0; }
+  .header-text .institution { color: #718096; font-size: 13px; margin-top: 4px; }
   .subtitle { text-align: center; color: #718096; margin-bottom: 24px; font-size: 14px; }
   .form-group { margin-bottom: 16px; }
-  label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; font-size: 14px; }
-  input, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+  label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; }
+  input, textarea { width: 100%; padding: 10px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; }
   input:focus, textarea:focus { outline: none; border-color: #667eea; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
-  button:hover:not(:disabled) { transform: translateY(-2px); }
+  .foto-section { background: #f7fafc; padding: 20px; border-radius: 8px; margin-bottom: 16px; border: 2px solid #e2e8f0; }
+  .foto-section h3 { color: #2c5282; margin-bottom: 15px; font-size: 18px; }
+  .foto-item { margin-bottom: 15px; padding: 10px; background: white; border-radius: 6px; }
+  .foto-item label { font-size: 14px; color: #4a5568; font-weight: 600; margin-bottom: 8px; display: block; }
+  .foto-item .keterangan { font-size: 12px; color: #718096; margin-top: 4px; }
+  .preview-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+  .preview-item { position: relative; border-radius: 8px; overflow: hidden; background: #e2e8f0; aspect-ratio: 1; border: 2px solid #cbd5e0; }
+  .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: #e53e3e; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 18px; line-height: 1; }
+  .preview-item .remove-btn:hover { background: #c53030; }
+  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
   button:disabled { opacity: 0.6; cursor: not-allowed; }
-  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; font-size: 14px; }
+  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; }
   .alert.success { background: #c6f6d5; color: #22543d; display: block; }
   .alert.error { background: #fed7d7; color: #742a2a; display: block; }
-  .preview { margin-top: 8px; max-width: 200px; border-radius: 8px; display: none; }
   .file-info { font-size: 12px; color: #718096; margin-top: 4px; }
-  .footer { text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; color: #a0aec0; font-size: 12px; }
+  @media (max-width: 768px) { .preview-container { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header-section">
-    <img src="https://bpsrw.dinaslhdki.id/images/logo.png" alt="Logo BPS" class="logo-bps" onerror="this.style.display='none'">
+    <img src="https://bpsrw.dinaslhdki.id/images/logo.png" alt="Logo BPS" class="logo-bps">
     <div class="header-text">
       <h1>Input Data Sampah Pilah</h1>
       <p class="institution">Bidang Pengelolaan Sampah RT/RW<br>Kelurahan Kota Bambu Utara</p>
@@ -43,28 +49,53 @@
   <p class="subtitle">Data otomatis tersimpan & rapi di Google Sheets</p>
 
   <form id="formSampah">
-    <div class="form-group">
-      <label>Foto Sampah *</label>
-      <input type="file" name="foto" accept="image/*" id="inputFoto" required>
-      <div class="file-info">Maks. 2MB (JPG/PNG). Foto akan diupload ke Google Drive.</div>
-      <img id="preview" class="preview" alt="preview">
+    <!-- Section Upload 4 Foto -->
+    <div class="foto-section">
+      <h3>📷 Upload Foto Sampah (Maksimal 4 Foto)</h3>
+      
+      <div class="foto-item">
+        <label>Foto 1 *</label>
+        <input type="file" name="foto1" accept="image/*" class="input-foto" data-index="0" required>
+        <div class="keterangan">Foto utama/sampah secara keseluruhan</div>
+      </div>
+      
+      <div class="foto-item">
+        <label>Foto 2 (Opsional)</label>
+        <input type="file" name="foto2" accept="image/*" class="input-foto" data-index="1">
+        <div class="keterangan">Detail sampah organik</div>
+      </div>
+      
+      <div class="foto-item">
+        <label>Foto 3 (Opsional)</label>
+        <input type="file" name="foto3" accept="image/*" class="input-foto" data-index="2">
+        <div class="keterangan">Detail sampah anorganik</div>
+      </div>
+      
+      <div class="foto-item">
+        <label>Foto 4 (Opsional)</label>
+        <input type="file" name="foto4" accept="image/*" class="input-foto" data-index="3">
+        <div class="keterangan">Detail sampah B3/residu</div>
+      </div>
+      
+      <div class="preview-container" id="previewContainer"></div>
     </div>
+
     <div class="form-group">
       <label>Nama *</label>
-      <input type="text" name="nama" maxlength="100" required>
+      <input type="text" name="nama" required>
     </div>
     <div class="form-group">
       <label>Alamat *</label>
-      <textarea name="alamat" rows="2" maxlength="255" required></textarea>
+      <textarea name="alamat" rows="2" required></textarea>
     </div>
     <div class="grid-2">
       <div class="form-group">
         <label>RT *</label>
-        <input type="text" name="rt" maxlength="5" pattern="[0-9]{1,5}" inputmode="numeric" placeholder="Contoh: 005" required>
+        <input type="text" name="rt" pattern="[0-9]{1,5}" required>
       </div>
       <div class="form-group">
         <label>RW *</label>
-        <input type="text" name="rw" maxlength="5" pattern="[0-9]{1,5}" inputmode="numeric" placeholder="Contoh: 003" required>
+        <input type="text" name="rw" pattern="[0-9]{1,5}" required>
       </div>
     </div>
     <div class="grid-2">
@@ -89,197 +120,163 @@
     <div id="alert" class="alert"></div>
   </form>
 
-  <div class="footer">© 2026 Bidang Pengelolaan Sampah RT/RW
-Kelurahan Kota Bambu Utara
-</div>
+  <div class="footer" style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 12px;">
+    © 2026 Bidang Pengelolaan Sampah RT/RW Kelurahan Kota Bambu Utara
+  </div>
 </div>
 
 <script>
   // ⚠️ GANTI DENGAN URL WEB APP ANDA
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyM8WfAYnPsHSQmIALaRjZcz3y4-ogdE9qw6g_0_z7tkQPADX2wIAA1kghEinAPVAJvWQ/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxeEfULqBiInrzt57cY_W61mzaMUdGaFlUHOo7VQPzQTqjPDqKcS2v6k-YBZojLiBk36Q/exec';
   
-  // Referensi DOM
   const form = document.getElementById('formSampah');
   const alertBox = document.getElementById('alert');
-  const preview = document.getElementById('preview');
-  const inputFoto = document.getElementById('inputFoto');
   const btnSubmit = document.getElementById('btnSubmit');
+  const previewContainer = document.getElementById('previewContainer');
+  const inputFoto = document.querySelectorAll('.input-foto');
   
-  // Konstanta
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+  const MAX_FOTOS = 4;
+  const fotoFiles = [null, null, null, null];
   
-  // Preview foto
-  inputFoto.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) {
-      preview.style.display = 'none';
-      return;
-    }
-    
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      showAlert('✗ Format file tidak didukung. Gunakan JPG/PNG/WebP', 'error');
-      inputFoto.value = '';
-      preview.style.display = 'none';
-      return;
-    }
-    
-    if (file.size > MAX_FILE_SIZE) {
-      showAlert('✗ Ukuran foto maksimal 2MB', 'error');
-      inputFoto.value = '';
-      preview.style.display = 'none';
-      return;
-    }
-    
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = 'block';
-    console.log('✓ File dipilih:', file.name, '| Ukuran:', (file.size/1024).toFixed(2), 'KB');
+  // Handle file input
+  inputFoto.forEach((input, index) => {
+    input.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        alert('File harus berupa gambar (JPG/PNG)');
+        this.value = '';
+        return;
+      }
+      
+      if (file.size > MAX_FILE_SIZE) {
+        alert('Ukuran foto maksimal 2MB');
+        this.value = '';
+        return;
+      }
+      
+      fotoFiles[index] = file;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        updatePreview(index, e.target.result);
+      };
+      reader.readAsDataURL(file);
+      
+      console.log('Foto ' + (index + 1) + ' dipilih:', file.name);
+    });
   });
   
-  // Konversi file ke base64
+  function updatePreview(index, src) {
+    const oldPreview = document.getElementById('preview-' + index);
+    if (oldPreview) oldPreview.remove();
+    
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.id = 'preview-' + index;
+    div.innerHTML = `
+      <img src="${src}" alt="Preview ${index + 1}">
+      <button type="button" class="remove-btn" onclick="removeFoto(${index})">×</button>
+    `;
+    previewContainer.appendChild(div);
+  }
+  
+  function removeFoto(index) {
+    fotoFiles[index] = null;
+    const input = document.querySelector('.input-foto[data-index="' + index + '"]');
+    if (input) input.value = '';
+    
+    const preview = document.getElementById('preview-' + index);
+    if (preview) preview.remove();
+  }
+  
   function fileToBase64(file) {
     return new Promise(function(resolve, reject) {
       const reader = new FileReader();
-      reader.onload = function() {
-        console.log('✓ File dikonversi ke base64 (length:', reader.result.length, ')');
-        resolve(reader.result);
-      };
-      reader.onerror = function() {
-        console.error('✗ Error membaca file:', reader.error);
-        reject(new Error('Gagal membaca file'));
-      };
+      reader.onload = function() { resolve(reader.result); };
+      reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
   
-  // Validasi RT/RW
-  function isValidRtRw(value) {
-    return /^\d{1,5}$/.test(String(value).trim());
-  }
-  
-  // Sanitasi string
-  function sanitize(str) {
-    return String(str).replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
-  }
-  
-  // Tampilkan alert
   function showAlert(msg, type) {
     alertBox.className = 'alert ' + type;
     alertBox.textContent = msg;
     if (type === 'success') {
-      setTimeout(function() {
-        alertBox.className = 'alert';
-      }, 5000);
+      setTimeout(function() { alertBox.className = 'alert'; }, 5000);
     }
   }
   
-  // Handle submit
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    alertBox.className = 'alert';
-    
-    // Validasi RT/RW
-    const rt = form.rt.value.trim();
-    const rw = form.rw.value.trim();
-    
-    if (!isValidRtRw(rt)) {
-      showAlert('✗ RT harus angka 1-5 digit', 'error');
-      return;
-    }
-    if (!isValidRtRw(rw)) {
-      showAlert('✗ RW harus angka 1-5 digit', 'error');
+    const fotoCount = fotoFiles.filter(f => f !== null).length;
+    if (fotoCount === 0) {
+      showAlert('✗ Minimal upload 1 foto', 'error');
       return;
     }
     
-    const file = inputFoto.files[0];
-    if (!file) {
-      showAlert('✗ Foto wajib diupload', 'error');
-      return;
-    }
-    
-    // Disable button
     btnSubmit.disabled = true;
     btnSubmit.textContent = 'Mengirim...';
+    alertBox.className = 'alert';
     
     try {
-      console.log('📤 Memulai upload...');
-      console.log('File:', file.name, '| Type:', file.type, '| Size:', file.size);
+      console.log('Memulai upload ' + fotoCount + ' foto...');
       
-      // Konversi ke base64
-      const fotoBase64 = await fileToBase64(file);
-      console.log('✓ Base64 ready');
+      const fotoBase64Array = ['', '', '', ''];
+      for (let i = 0; i < MAX_FOTOS; i++) {
+        if (fotoFiles[i]) {
+          const base64 = await fileToBase64(fotoFiles[i]);
+          fotoBase64Array[i] = base64;
+          console.log('Foto ' + (i + 1) + ' dikonversi, length:', base64.length);
+        }
+      }
       
-      // Susun payload
       const payload = {
-        nama: sanitize(form.nama.value),
-        alamat: sanitize(form.alamat.value),
-        rt: sanitize(rt),
-        rw: sanitize(rw),
+        nama: form.nama.value.trim(),
+        alamat: form.alamat.value.trim(),
+        rt: form.rt.value.trim(),
+        rw: form.rw.value.trim(),
         organik: parseFloat(form.organik.value) || 0,
         anorganik: parseFloat(form.anorganik.value) || 0,
         b3: parseFloat(form.b3.value) || 0,
         residu: parseFloat(form.residu.value) || 0,
-        foto: fotoBase64
+        foto1: fotoBase64Array[0],
+        foto2: fotoBase64Array[1],
+        foto3: fotoBase64Array[2],
+        foto4: fotoBase64Array[3]
       };
       
-      console.log('📤 Sending to Apps Script...');
-      console.log('Payload:', JSON.stringify({
-        ...payload,
-        foto: fotoBase64.substring(0, 50) + '...[truncated]'
-      }, null, 2));
+      console.log('Payload dikirim');
       
-      // Kirim ke Apps Script
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 
-          'Content-Type': 'text/plain'
-        },
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload)
       });
       
-      console.log('✓ Response status:', response.status);
-      console.log('✓ Data berhasil dikirim!');
+      console.log('Response status:', response.status);
       
-      // Hitung total
       const total = (payload.organik + payload.anorganik + payload.b3 + payload.residu).toFixed(2);
+      showAlert('✓ Data & ' + fotoCount + ' foto berhasil disimpan! Total: ' + total + ' kg', 'success');
       
-      showAlert('✓ Data berhasil disimpan! Total: ' + total + ' kg', 'success');
-      
-      // Reset form
       form.reset();
-      preview.style.display = 'none';
+      fotoFiles.fill(null);
+      previewContainer.innerHTML = '';
       
     } catch (err) {
-      console.error('✗ Error:', err);
-      let errorMsg = err.message;
-      
-      if (err instanceof TypeError && err.message.includes('fetch')) {
-        errorMsg = 'Gagal terhubung ke server. Periksa koneksi internet dan URL Apps Script.';
-      }
-      
-      showAlert('✗ ' + errorMsg, 'error');
+      console.error('Error:', err);
+      showAlert('✗ ' + err.message, 'error');
     } finally {
       btnSubmit.disabled = false;
       btnSubmit.textContent = 'Kirim Data';
     }
   });
   
-  console.log('✓ Form siap digunakan');
-  console.log('Endpoint:', APPS_SCRIPT_URL);
-  
-  // Warn jika form belum disubmit
-  let formDirty = false;
-  form.addEventListener('input', function() { formDirty = true; });
-  form.addEventListener('submit', function() { formDirty = false; });
-  
-  window.addEventListener('beforeunload', function(e) {
-    if (formDirty) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-  });
+  console.log('Form siap. URL:', APPS_SCRIPT_URL);
 </script>
 </body>
 </html>
