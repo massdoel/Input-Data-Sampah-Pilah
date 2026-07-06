@@ -5,31 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Input Data Sampah - BPS</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
   body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
   .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
   .header-section { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
-  .logo-bps { width: 70px; height: 70px; object-fit: contain; }
-  .header-text h1 { color: #2c5282; font-size: 24px; margin: 0; }
-  .header-text .institution { color: #718096; font-size: 13px; margin-top: 4px; }
+  .logo-bps { width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; background: white; padding: 4px; border-radius: 8px; }
+  .header-text { text-align: left; }
+  .header-text h1 { color: #2c5282; font-size: 24px; line-height: 1.2; margin: 0; }
+  .header-text .institution { color: #718096; font-size: 13px; line-height: 1.4; margin-top: 4px; }
+  @media (max-width: 480px) { .logo-bps { width: 55px; height: 55px; } .header-text h1 { font-size: 20px; } .header-text .institution { font-size: 12px; } .header-section { gap: 12px; } }
   .subtitle { text-align: center; color: #718096; margin-bottom: 24px; font-size: 14px; }
   .form-group { margin-bottom: 16px; }
-  label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; }
-  input, textarea { width: 100%; padding: 10px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; }
+  label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; font-size: 14px; }
+  input, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
   input:focus, textarea:focus { outline: none; border-color: #667eea; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.2s; }
+  button:hover:not(:disabled) { transform: translateY(-2px); }
   button:disabled { opacity: 0.6; cursor: not-allowed; }
-  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; }
+  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; font-size: 14px; }
   .alert.success { background: #c6f6d5; color: #22543d; display: block; }
   .alert.error { background: #fed7d7; color: #742a2a; display: block; }
   .preview { margin-top: 8px; max-width: 200px; border-radius: 8px; display: none; }
+  .file-info { font-size: 12px; color: #718096; margin-top: 4px; }
+  .footer { text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #e2e8f0; color: #a0aec0; font-size: 12px; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header-section">
-    <img src="https://bpsrw.dinaslhdki.id/images/logo.png" alt="Logo BPS" class="logo-bps">
+    <img src="https://bpsrw.dinaslhdki.id/images/logo.png" alt="Logo BPS" class="logo-bps" onerror="this.style.display='none'">
     <div class="header-text">
       <h1>Input Data Sampah Pilah</h1>
       <p class="institution">Bidang Pengelolaan Sampah RT/RW<br>Kelurahan Kota Bambu Utara</p>
@@ -41,24 +46,25 @@
     <div class="form-group">
       <label>Foto Sampah *</label>
       <input type="file" name="foto" accept="image/*" id="inputFoto" required>
+      <div class="file-info">Maks. 2MB (JPG/PNG). Foto akan diupload ke Google Drive.</div>
       <img id="preview" class="preview" alt="preview">
     </div>
     <div class="form-group">
       <label>Nama *</label>
-      <input type="text" name="nama" required>
+      <input type="text" name="nama" maxlength="100" required>
     </div>
     <div class="form-group">
       <label>Alamat *</label>
-      <textarea name="alamat" rows="2" required></textarea>
+      <textarea name="alamat" rows="2" maxlength="255" required></textarea>
     </div>
     <div class="grid-2">
       <div class="form-group">
         <label>RT *</label>
-        <input type="text" name="rt" pattern="[0-9]{1,5}" required>
+        <input type="text" name="rt" maxlength="5" pattern="[0-9]{1,5}" inputmode="numeric" placeholder="Contoh: 005" required>
       </div>
       <div class="form-group">
         <label>RW *</label>
-        <input type="text" name="rw" pattern="[0-9]{1,5}" required>
+        <input type="text" name="rw" maxlength="5" pattern="[0-9]{1,5}" inputmode="numeric" placeholder="Contoh: 003" required>
       </div>
     </div>
     <div class="grid-2">
@@ -82,70 +88,132 @@
     <button type="submit" id="btnSubmit">Kirim Data</button>
     <div id="alert" class="alert"></div>
   </form>
+
+  <div class="footer">© 2026 Badan Pusat Statistik - Sistem Input Data Sampah</div>
 </div>
 
 <script>
-  // ⚠️ PENTING: GANTI URL INI DENGAN URL WEB APP ANDA
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyM8WfAYnPsHSQmIALaRjZcz3y4-ogdE9qw6g_0_z7tkQPADX2wIAA1kghEinAPVAJvWQ/exec';
+  // ⚠️ GANTI DENGAN URL WEB APP ANDA
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXXX/exec';
   
+  // Referensi DOM
   const form = document.getElementById('formSampah');
   const alertBox = document.getElementById('alert');
   const preview = document.getElementById('preview');
   const inputFoto = document.getElementById('inputFoto');
   const btnSubmit = document.getElementById('btnSubmit');
   
+  // Konstanta
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  
   // Preview foto
   inputFoto.addEventListener('change', function(e) {
     const file = e.target.files[0];
-    if (file) {
-      preview.src = URL.createObjectURL(file);
-      preview.style.display = 'block';
-      console.log('File dipilih:', file.name);
+    if (!file) {
+      preview.style.display = 'none';
+      return;
     }
+    
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      showAlert('✗ Format file tidak didukung. Gunakan JPG/PNG/WebP', 'error');
+      inputFoto.value = '';
+      preview.style.display = 'none';
+      return;
+    }
+    
+    if (file.size > MAX_FILE_SIZE) {
+      showAlert('✗ Ukuran foto maksimal 2MB', 'error');
+      inputFoto.value = '';
+      preview.style.display = 'none';
+      return;
+    }
+    
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+    console.log('✓ File dipilih:', file.name, '| Ukuran:', (file.size/1024).toFixed(2), 'KB');
   });
   
-  // Konversi ke base64
+  // Konversi file ke base64
   function fileToBase64(file) {
     return new Promise(function(resolve, reject) {
       const reader = new FileReader();
-      reader.onload = function() { resolve(reader.result); };
-      reader.onerror = reject;
+      reader.onload = function() {
+        console.log('✓ File dikonversi ke base64 (length:', reader.result.length, ')');
+        resolve(reader.result);
+      };
+      reader.onerror = function() {
+        console.error('✗ Error membaca file:', reader.error);
+        reject(new Error('Gagal membaca file'));
+      };
       reader.readAsDataURL(file);
     });
   }
   
+  // Validasi RT/RW
+  function isValidRtRw(value) {
+    return /^\d{1,5}$/.test(String(value).trim());
+  }
+  
+  // Sanitasi string
+  function sanitize(str) {
+    return String(str).replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+  }
+  
+  // Tampilkan alert
   function showAlert(msg, type) {
     alertBox.className = 'alert ' + type;
     alertBox.textContent = msg;
     if (type === 'success') {
-      setTimeout(function() { alertBox.className = 'alert'; }, 5000);
+      setTimeout(function() {
+        alertBox.className = 'alert';
+      }, 5000);
     }
   }
   
-  // Submit form
+  // Handle submit
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Mengirim...';
     alertBox.className = 'alert';
     
+    // Validasi RT/RW
+    const rt = form.rt.value.trim();
+    const rw = form.rw.value.trim();
+    
+    if (!isValidRtRw(rt)) {
+      showAlert('✗ RT harus angka 1-5 digit', 'error');
+      return;
+    }
+    if (!isValidRtRw(rw)) {
+      showAlert('✗ RW harus angka 1-5 digit', 'error');
+      return;
+    }
+    
+    const file = inputFoto.files[0];
+    if (!file) {
+      showAlert('✗ Foto wajib diupload', 'error');
+      return;
+    }
+    
+    // Disable button
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Mengirim...';
+    
     try {
-      const file = inputFoto.files[0];
-      if (!file) throw new Error('Foto wajib diupload');
+      console.log('📤 Memulai upload...');
+      console.log('File:', file.name, '| Type:', file.type, '| Size:', file.size);
       
-      console.log('Memulai upload...');
-      
-      // Konversi foto
+      // Konversi ke base64
       const fotoBase64 = await fileToBase64(file);
-      console.log('Foto dikonversi, length:', fotoBase64.length);
+      console.log('✓ Base64 ready');
       
-      // Buat payload
+      // Susun payload
       const payload = {
-        nama: form.nama.value.trim(),
-        alamat: form.alamat.value.trim(),
-        rt: form.rt.value.trim(),
-        rw: form.rw.value.trim(),
+        nama: sanitize(form.nama.value),
+        alamat: sanitize(form.alamat.value),
+        rt: sanitize(rt),
+        rw: sanitize(rw),
         organik: parseFloat(form.organik.value) || 0,
         anorganik: parseFloat(form.anorganik.value) || 0,
         b3: parseFloat(form.b3.value) || 0,
@@ -153,35 +221,63 @@
         foto: fotoBase64
       };
       
-      console.log('Payload:', payload);
-      console.log('URL:', APPS_SCRIPT_URL);
+      console.log('📤 Sending to Apps Script...');
+      console.log('Payload:', JSON.stringify({
+        ...payload,
+        foto: fotoBase64.substring(0, 50) + '...[truncated]'
+      }, null, 2));
       
       // Kirim ke Apps Script
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
+        headers: { 
+          'Content-Type': 'text/plain'
+        },
         body: JSON.stringify(payload)
       });
       
-      console.log('Response status:', response.status);
+      console.log('✓ Response status:', response.status);
+      console.log('✓ Data berhasil dikirim!');
       
+      // Hitung total
       const total = (payload.organik + payload.anorganik + payload.b3 + payload.residu).toFixed(2);
+      
       showAlert('✓ Data berhasil disimpan! Total: ' + total + ' kg', 'success');
       
+      // Reset form
       form.reset();
       preview.style.display = 'none';
       
     } catch (err) {
-      console.error('Error:', err);
-      showAlert('✗ ' + err.message, 'error');
+      console.error('✗ Error:', err);
+      let errorMsg = err.message;
+      
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        errorMsg = 'Gagal terhubung ke server. Periksa koneksi internet dan URL Apps Script.';
+      }
+      
+      showAlert('✗ ' + errorMsg, 'error');
     } finally {
       btnSubmit.disabled = false;
       btnSubmit.textContent = 'Kirim Data';
     }
   });
   
-  console.log('Form siap. URL Apps Script:', APPS_SCRIPT_URL);
+  console.log('✓ Form siap digunakan');
+  console.log('Endpoint:', APPS_SCRIPT_URL);
+  
+  // Warn jika form belum disubmit
+  let formDirty = false;
+  form.addEventListener('input', function() { formDirty = true; });
+  form.addEventListener('submit', function() { formDirty = false; });
+  
+  window.addEventListener('beforeunload', function(e) {
+    if (formDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 </script>
 </body>
 </html>
