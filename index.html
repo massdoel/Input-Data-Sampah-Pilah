@@ -123,7 +123,8 @@
   }
   
   // Submit form
-  form.addEventListener('submit', async function(e) {
+   form.addEventListener('submit', async function(e) {
+    e.preventDefault();
   e.preventDefault();
   
   btnSubmit.disabled = true;
@@ -133,39 +134,45 @@
   try {
     const file = inputFoto.files[0];
     if (!file) throw new Error('Foto wajib diupload');
-    
+
+    btnSubmit.disabled = true;
+    btnSubmit.textContent = 'Mengirim...';
+    alertBox.className = 'alert';
     console.log('File:', file.name, '| Size:', file.size);
-    
-    // Konversi ke base64
-    const fotoBase64 = await fileToBase64(file);
-    console.log('Base64 length:', fotoBase64.length);
-    console.log('Base64 awal:', fotoBase64.substring(0, 60));
-    
-    // Buat payload
-    const payload = {
-      nama: form.nama.value.trim(),
-      alamat: form.alamat.value.trim(),
-      rt: form.rt.value.trim(),
-      rw: form.rw.value.trim(),
-      organik: parseFloat(form.organik.value) || 0,
-      anorganik: parseFloat(form.anorganik.value) || 0,
-      b3: parseFloat(form.b3.value) || 0,
-      residu: parseFloat(form.residu.value) || 0,
-      foto: fotoBase64  // Pastikan ini ada
-    };
-    
-    console.log('Payload keys:', Object.keys(payload).join(', '));
-    console.log('Payload.foto length:', payload.foto.length);
-    
-    // Kirim
-    const response = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    });
+
+    try {
+      const file = inputFoto.files[0];
+      if (!file) throw new Error('Foto wajib diupload');
+      
+      console.log('Memulai upload...');
+      
+      // Konversi foto
+      const fotoBase64 = await fileToBase64(file);
+      console.log('Foto dikonversi, length:', fotoBase64.length);
+      
+      // Buat payload
+      const payload = {
+        nama: form.nama.value.trim(),
+        alamat: form.alamat.value.trim(),
+        rt: form.rt.value.trim(),
+        rw: form.rw.value.trim(),
+        organik: parseFloat(form.organik.value) || 0,
+        anorganik: parseFloat(form.anorganik.value) || 0,
+        b3: parseFloat(form.b3.value) || 0,
+        residu: parseFloat(form.residu.value) || 0,
+        foto: fotoBase64
+      };
+      
+      console.log('Payload:', payload);
+      console.log('URL:', APPS_SCRIPT_URL);
+      
+      // Kirim ke Apps Script
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      });
     
     console.log('Response status:', response.status);
     
