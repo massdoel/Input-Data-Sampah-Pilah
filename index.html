@@ -15,8 +15,9 @@
   .subtitle { text-align: center; color: #718096; margin-bottom: 24px; font-size: 14px; }
   .form-group { margin-bottom: 16px; }
   label { display: block; margin-bottom: 6px; font-weight: 600; color: #2d3748; }
-  input, textarea { width: 100%; padding: 10px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; }
-  input:focus, textarea:focus { outline: none; border-color: #667eea; }
+  input, textarea { width: 100%; padding: 10px; border: 1.5px solid #cbd5e0; border-radius: 8px; font-size: 14px; transition: border-color 0.2s; }
+  input:focus, textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+  input:invalid:not(:placeholder-shown) { border-color: #e53e3e; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .foto-section { background: #f7fafc; padding: 20px; border-radius: 8px; margin-bottom: 16px; border: 2px solid #e2e8f0; }
   .foto-section h3 { color: #2c5282; margin-bottom: 15px; font-size: 18px; }
@@ -26,15 +27,35 @@
   .preview-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
   .preview-item { position: relative; border-radius: 8px; overflow: hidden; background: #e2e8f0; aspect-ratio: 1; border: 2px solid #cbd5e0; }
   .preview-item img { width: 100%; height: 100%; object-fit: cover; }
-  .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: #e53e3e; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 18px; line-height: 1; }
+  .preview-item .remove-btn { position: absolute; top: 5px; right: 5px; background: #e53e3e; color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 18px; line-height: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
   .preview-item .remove-btn:hover { background: #c53030; }
-  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+  
+  /* Total Preview Card */
+  .total-preview { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 16px 20px; border-radius: 10px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(72,187,120,0.3); }
+  .total-preview .label { font-size: 14px; font-weight: 500; opacity: 0.95; }
+  .total-preview .value { font-size: 24px; font-weight: 700; }
+  .total-preview .unit { font-size: 14px; margin-left: 4px; opacity: 0.9; }
+  
+  button { width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.1s, box-shadow 0.2s; }
+  button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(102,126,234,0.4); }
+  button:active:not(:disabled) { transform: translateY(0); }
   button:disabled { opacity: 0.6; cursor: not-allowed; }
-  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; }
-  .alert.success { background: #c6f6d5; color: #22543d; display: block; }
-  .alert.error { background: #fed7d7; color: #742a2a; display: block; }
+  .alert { padding: 12px; border-radius: 8px; margin-top: 16px; display: none; font-size: 14px; line-height: 1.5; }
+  .alert.success { background: #c6f6d5; color: #22543d; display: block; border-left: 4px solid #38a169; }
+  .alert.error { background: #fed7d7; color: #742a2a; display: block; border-left: 4px solid #e53e3e; }
+  .alert.warning { background: #feebc8; color: #7b341e; display: block; border-left: 4px solid #dd6b20; }
   .file-info { font-size: 12px; color: #718096; margin-top: 4px; }
-  @media (max-width: 768px) { .preview-container { grid-template-columns: repeat(2, 1fr); } }
+  .required { color: #e53e3e; }
+  
+  /* Loading Spinner */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  @media (max-width: 768px) { 
+    .preview-container { grid-template-columns: repeat(2, 1fr); } 
+    .container { padding: 20px; }
+    .header-text h1 { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -48,32 +69,32 @@
   </div>
   <p class="subtitle">Data otomatis tersimpan & rapi di Google Sheets</p>
 
-  <form id="formSampah">
+  <form id="formSampah" novalidate>
     <!-- Section Upload 4 Foto -->
     <div class="foto-section">
       <h3>📷 Upload Foto Sampah (Maksimal 4 Foto)</h3>
       
       <div class="foto-item">
-        <label>Foto 1 *</label>
-        <input type="file" name="foto1" accept="image/*" class="input-foto" data-index="0" required>
-        <div class="keterangan">Foto utama/sampah secara keseluruhan</div>
+        <label>Foto 1 <span class="required">*</span></label>
+        <input type="file" name="foto1" accept="image/jpeg,image/png,image/webp" class="input-foto" data-index="0" required>
+        <div class="keterangan">Foto utama/sampah secara keseluruhan (JPG/PNG, maks 2MB)</div>
       </div>
       
       <div class="foto-item">
         <label>Foto 2 (Opsional)</label>
-        <input type="file" name="foto2" accept="image/*" class="input-foto" data-index="1">
+        <input type="file" name="foto2" accept="image/jpeg,image/png,image/webp" class="input-foto" data-index="1">
         <div class="keterangan">Detail sampah organik</div>
       </div>
       
       <div class="foto-item">
         <label>Foto 3 (Opsional)</label>
-        <input type="file" name="foto3" accept="image/*" class="input-foto" data-index="2">
+        <input type="file" name="foto3" accept="image/jpeg,image/png,image/webp" class="input-foto" data-index="2">
         <div class="keterangan">Detail sampah anorganik</div>
       </div>
       
       <div class="foto-item">
         <label>Foto 4 (Opsional)</label>
-        <input type="file" name="foto4" accept="image/*" class="input-foto" data-index="3">
+        <input type="file" name="foto4" accept="image/jpeg,image/png,image/webp" class="input-foto" data-index="3">
         <div class="keterangan">Detail sampah B3/residu</div>
       </div>
       
@@ -81,41 +102,55 @@
     </div>
 
     <div class="form-group">
-      <label>Nama *</label>
-      <input type="text" name="nama" required>
+      <label>Nama <span class="required">*</span></label>
+      <input type="text" name="nama" required minlength="2" maxlength="100" placeholder="Masukkan nama lengkap">
     </div>
     <div class="form-group">
-      <label>Alamat *</label>
-      <textarea name="alamat" rows="2" required></textarea>
+      <label>Alamat <span class="required">*</span></label>
+      <textarea name="alamat" rows="2" required minlength="5" maxlength="200" placeholder="Masukkan alamat lengkap"></textarea>
     </div>
     <div class="grid-2">
       <div class="form-group">
-        <label>RT *</label>
-        <input type="text" name="rt" pattern="[0-9]{1,5}" required>
+        <label>RT <span class="required">*</span></label>
+        <input type="text" name="rt" pattern="[0-9]{1,5}" required maxlength="5" placeholder="Contoh: 001">
       </div>
       <div class="form-group">
-        <label>RW *</label>
-        <input type="text" name="rw" pattern="[0-9]{1,5}" required>
+        <label>RW <span class="required">*</span></label>
+        <input type="text" name="rw" pattern="[0-9]{1,5}" required maxlength="5" placeholder="Contoh: 002">
       </div>
     </div>
+    
     <div class="grid-2">
       <div class="form-group">
         <label>Organik (kg)</label>
-        <input type="number" name="organik" step="0.01" min="0" value="0" required>
+        <input type="number" name="organik" class="input-berat" step="0.01" min="0" max="9999" value="0" required>
       </div>
       <div class="form-group">
         <label>Anorganik (kg)</label>
-        <input type="number" name="anorganik" step="0.01" min="0" value="0" required>
+        <input type="number" name="anorganik" class="input-berat" step="0.01" min="0" max="9999" value="0" required>
       </div>
       <div class="form-group">
         <label>B3 (kg)</label>
-        <input type="number" name="b3" step="0.01" min="0" value="0" required>
+        <input type="number" name="b3" class="input-berat" step="0.01" min="0" max="9999" value="0" required>
       </div>
       <div class="form-group">
         <label>Residu (kg)</label>
-        <input type="number" name="residu" step="0.01" min="0" value="0" required>
+        <input type="number" name="residu" class="input-berat" step="0.01" min="0" max="9999" value="0" required>
       </div>
     </div>
+
+    <!-- Live Total Preview (Hanya untuk tampilan, tidak dikirim ke backend) -->
+    <div class="total-preview">
+      <div>
+        <div class="label">Total Berat Sampah</div>
+        <div style="font-size: 11px; opacity: 0.85;">(Preview - tidak disimpan di database)</div>
+      </div>
+      <div>
+        <span class="value" id="totalPreview">0.00</span>
+        <span class="unit">kg</span>
+      </div>
+    </div>
+
     <button type="submit" id="btnSubmit">Kirim Data</button>
     <div id="alert" class="alert"></div>
   </form>
@@ -129,30 +164,55 @@
   // ⚠️ GANTI DENGAN URL WEB APP ANDA
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFYoVP7rqplibjexfHmlJci_ASnJjDkix5O066xQB-AvTH90Ge6WnWu9kNiAAilqLzXA/exec';
   
+  const CONFIG = {
+    MAX_FILE_SIZE: 2 * 1024 * 1024, // 2MB
+    MAX_FOTOS: 4,
+    ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
+    REQUEST_TIMEOUT: 120000 // 2 menit (Apps Script butuh waktu untuk upload foto)
+  };
+  
   const form = document.getElementById('formSampah');
   const alertBox = document.getElementById('alert');
   const btnSubmit = document.getElementById('btnSubmit');
   const previewContainer = document.getElementById('previewContainer');
+  const totalPreview = document.getElementById('totalPreview');
   const inputFoto = document.querySelectorAll('.input-foto');
+  const inputBerat = document.querySelectorAll('.input-berat');
   
-  const MAX_FILE_SIZE = 2 * 1024 * 1024;
-  const MAX_FOTOS = 4;
   const fotoFiles = [null, null, null, null];
   
-  // Handle file input
+  // ===== LIVE TOTAL CALCULATION =====
+  function updateTotalPreview() {
+    const organik = parseFloat(form.organik.value) || 0;
+    const anorganik = parseFloat(form.anorganik.value) || 0;
+    const b3 = parseFloat(form.b3.value) || 0;
+    const residu = parseFloat(form.residu.value) || 0;
+    
+    const total = organik + anorganik + b3 + residu;
+    totalPreview.textContent = total.toFixed(2);
+  }
+  
+  inputBerat.forEach(input => {
+    input.addEventListener('input', updateTotalPreview);
+  });
+  
+  // ===== FILE INPUT HANDLING =====
   inputFoto.forEach((input, index) => {
     input.addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       
-      if (!file.type.startsWith('image/')) {
-        alert('File harus berupa gambar (JPG/PNG)');
+      // Validasi tipe file
+      if (!CONFIG.ALLOWED_TYPES.includes(file.type)) {
+        showAlert('✗ Format foto tidak didukung. Gunakan JPG, PNG, atau WebP.', 'error');
         this.value = '';
         return;
       }
       
-      if (file.size > MAX_FILE_SIZE) {
-        alert('Ukuran foto maksimal 2MB');
+      // Validasi ukuran file
+      if (file.size > CONFIG.MAX_FILE_SIZE) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        showAlert(`✗ Ukuran foto terlalu besar (${sizeMB}MB). Maksimal 2MB.`, 'error');
         this.value = '';
         return;
       }
@@ -163,9 +223,12 @@
       reader.onload = function(e) {
         updatePreview(index, e.target.result);
       };
+      reader.onerror = function() {
+        showAlert('✗ Gagal membaca foto ' + (index + 1), 'error');
+        fotoFiles[index] = null;
+        input.value = '';
+      };
       reader.readAsDataURL(file);
-      
-      console.log('Foto ' + (index + 1) + ' dipilih:', file.name);
     });
   });
   
@@ -178,7 +241,7 @@
     div.id = 'preview-' + index;
     div.innerHTML = `
       <img src="${src}" alt="Preview ${index + 1}">
-      <button type="button" class="remove-btn" onclick="removeFoto(${index})">×</button>
+      <button type="button" class="remove-btn" onclick="removeFoto(${index})" aria-label="Hapus foto">×</button>
     `;
     previewContainer.appendChild(div);
   }
@@ -196,44 +259,102 @@
     return new Promise(function(resolve, reject) {
       const reader = new FileReader();
       reader.onload = function() { resolve(reader.result); };
-      reader.onerror = reject;
+      reader.onerror = function() { reject(new Error('Gagal membaca file: ' + file.name)); };
       reader.readAsDataURL(file);
     });
   }
   
   function showAlert(msg, type) {
     alertBox.className = 'alert ' + type;
-    alertBox.textContent = msg;
+    alertBox.innerHTML = msg;
     if (type === 'success') {
-      setTimeout(function() { alertBox.className = 'alert'; }, 5000);
+      setTimeout(function() { 
+        alertBox.className = 'alert'; 
+        alertBox.innerHTML = '';
+      }, 6000);
     }
+    // Scroll ke alert
+    alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   
+  // ===== FORM VALIDATION =====
+  function validateForm() {
+    // Cek foto minimal 1
+    const fotoCount = fotoFiles.filter(f => f !== null).length;
+    if (fotoCount === 0) {
+      showAlert('✗ Minimal upload 1 foto (Foto 1 wajib diisi).', 'error');
+      return false;
+    }
+    
+    // Cek nama
+    const nama = form.nama.value.trim();
+    if (nama.length < 2) {
+      showAlert('✗ Nama minimal 2 karakter.', 'error');
+      return false;
+    }
+    
+    // Cek alamat
+    const alamat = form.alamat.value.trim();
+    if (alamat.length < 5) {
+      showAlert('✗ Alamat minimal 5 karakter.', 'error');
+      return false;
+    }
+    
+    // Cek RT/RW
+    if (!/^[0-9]{1,5}$/.test(form.rt.value.trim())) {
+      showAlert('✗ RT harus berupa angka (1-5 digit).', 'error');
+      return false;
+    }
+    if (!/^[0-9]{1,5}$/.test(form.rw.value.trim())) {
+      showAlert('✗ RW harus berupa angka (1-5 digit).', 'error');
+      return false;
+    }
+    
+    // Cek berat (tidak boleh negatif)
+    const fields = ['organik', 'anorganik', 'b3', 'residu'];
+    for (const field of fields) {
+      const val = parseFloat(form[field].value);
+      if (isNaN(val) || val < 0) {
+        showAlert(`✗ Nilai ${field} tidak valid (harus angka ≥ 0).`, 'error');
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  // ===== FORM SUBMISSION =====
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const fotoCount = fotoFiles.filter(f => f !== null).length;
-    if (fotoCount === 0) {
-      showAlert('✗ Minimal upload 1 foto', 'error');
-      return;
-    }
+    if (!validateForm()) return;
     
     btnSubmit.disabled = true;
-    btnSubmit.textContent = 'Mengirim...';
+    btnSubmit.innerHTML = '<span class="spinner"></span>Mengirim data & foto...';
     alertBox.className = 'alert';
+    alertBox.innerHTML = '';
     
     try {
+      const fotoCount = fotoFiles.filter(f => f !== null).length;
       console.log('Memulai upload ' + fotoCount + ' foto...');
       
+      // Konversi foto ke base64
       const fotoBase64Array = ['', '', '', ''];
-      for (let i = 0; i < MAX_FOTOS; i++) {
+      for (let i = 0; i < CONFIG.MAX_FOTOS; i++) {
         if (fotoFiles[i]) {
-          const base64 = await fileToBase64(fotoFiles[i]);
-          fotoBase64Array[i] = base64;
-          console.log('Foto ' + (i + 1) + ' dikonversi, length:', base64.length);
+          try {
+            const base64 = await fileToBase64(fotoFiles[i]);
+            fotoBase64Array[i] = base64;
+            console.log('Foto ' + (i + 1) + ' dikonversi, ukuran:', (base64.length / 1024).toFixed(1) + 'KB');
+          } catch (err) {
+            console.error('Error konversi foto ' + (i + 1) + ':', err);
+            showAlert('✗ Gagal memproses foto ' + (i + 1) + ': ' + err.message, 'error');
+            return;
+          }
         }
       }
       
+      // Payload sesuai kontrak Apps Script (TIDAK mengirim total, karena kolom total sudah dihapus)
       const payload = {
         nama: form.nama.value.trim(),
         alamat: form.alamat.value.trim(),
@@ -249,34 +370,63 @@
         foto4: fotoBase64Array[3]
       };
       
-      console.log('Payload dikirim');
+      // Kirim dengan timeout controller
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT);
       
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
-      });
+      let response;
+      try {
+        response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
       
-      console.log('Response status:', response.status);
-      
+      // Karena mode: 'no-cors', response tidak bisa dibaca (opaque)
+      // Kita asumsikan sukses jika tidak ada error throw
       const total = (payload.organik + payload.anorganik + payload.b3 + payload.residu).toFixed(2);
-      showAlert('✓ Data & ' + fotoCount + ' foto berhasil disimpan! Total: ' + total + ' kg', 'success');
       
+      showAlert(
+        `✓ <strong>Data berhasil disimpan!</strong><br>` +
+        `📷 ${fotoCount} foto terupload<br>` +
+        `⚖️ Total berat: ${total} kg<br>` +
+        `<small style="opacity:0.8">Catatan: Total hanya ditampilkan di form, tidak disimpan di database.</small>`,
+        'success'
+      );
+      
+      // Reset form
       form.reset();
       fotoFiles.fill(null);
       previewContainer.innerHTML = '';
+      updateTotalPreview();
+      
+      // Reset value default untuk input berat
+      document.querySelectorAll('.input-berat').forEach(input => {
+        input.value = '0';
+      });
       
     } catch (err) {
       console.error('Error:', err);
-      showAlert('✗ ' + err.message, 'error');
+      if (err.name === 'AbortError') {
+        showAlert('✗ Request timeout. Server terlalu lama merespons. Silakan coba lagi.', 'error');
+      } else {
+        showAlert('✗ Gagal mengirim data: ' + err.message, 'error');
+      }
     } finally {
       btnSubmit.disabled = false;
-      btnSubmit.textContent = 'Kirim Data';
+      btnSubmit.innerHTML = 'Kirim Data';
     }
   });
   
-  console.log('Form siap. URL:', APPS_SCRIPT_URL);
+  // ===== INITIALIZATION =====
+  updateTotalPreview();
+  console.log('✓ Form siap. URL:', APPS_SCRIPT_URL);
+  console.log('✓ Konfigurasi:', CONFIG);
 </script>
 </body>
 </html>
